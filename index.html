@@ -2,79 +2,70 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guerre Totale - Jeu Telegram</title>
-    
-    <script src="https://alwingulla.com/act/pelt.js" data-zone="VOTRE_ZONE_ID"></script>
-
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #0b0e14;
-            color: white;
-            font-family: sans-serif;
-            text-align: center;
+        body { 
+            background: #121212; 
+            color: white; 
+            text-align: center; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 50px;
         }
-        .header {
-            background: linear-gradient(to bottom, #1a2533, #0b0e14);
+        .stat-card {
+            background: #1e1e1e;
             padding: 20px;
-            border-bottom: 2px solid #d35400;
-        }
-        .game-area {
-            padding: 50px 20px;
-        }
-        .btn-action {
-            display: block;
-            width: 80%;
+            border-radius: 15px;
             margin: 20px auto;
-            padding: 15px;
-            background-color: #d35400;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 8px;
-            border: none;
+            width: 80%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        #score { font-size: 2em; color: #0088cc; font-weight: bold; }
+        button { 
+            padding: 15px 30px; 
+            font-size: 1.2em;
+            background: linear-gradient(135deg, #0088cc, #005588); 
+            color: white; 
+            border: none; 
+            border-radius: 50px; 
             cursor: pointer;
+            transition: transform 0.1s;
         }
-        .btn-bonus {
-            background-color: #27ae60;
-        }
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            background: #1c252d;
-            padding: 10px;
-            font-size: 0.9em;
-        }
+        button:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
-
-    <div class="header">
-        <h1>GUERRE TOTALE</h1>
+    <h2 id="welcome">Chargement...</h2>
+    
+    <div class="stat-card">
+        <p>Points de Bataille</p>
+        <div id="score">0</div>
     </div>
 
-    <div class="stats">
-        <div>Niveau: 1</div>
-        <div>Soldats: 150</div>
-        <div>Or: 2500</div>
-    </div>
-
-    <div class="game-area">
-        <p>Soldat, choisissez votre prochaine action sur le front.</p>
-        
-        <button class="btn-action" onclick="alert('Attaque lancée !')">ATTAQUER L'ENNEMI</button>
-
-        <a href="https://omg10.com/4/8817332" class="btn-action btn-bonus">
-            🎁 RÉCUPÉRER 500 OR GRATUIT
-        </a>
-    </div>
+    <button onclick="addPoint()">ATTAQUER ⚔️</button>
 
     <script>
-        // Optionnel : Intégrer l'API Telegram WebApp pour fermer ou interagir avec le bot
-        window.Telegram.WebApp.ready();
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // Récupérer le nom de l'utilisateur Telegram
+        const user = tg.initDataUnsafe?.user;
+        if (user) {
+            document.getElementById('welcome').innerText = `Soldat ${user.first_name}`;
+        }
+
+        let points = parseInt(localStorage.getItem('points')) || 0;
+        document.getElementById('score').innerText = points;
+
+        function addPoint() {
+            points++;
+            document.getElementById('score').innerText = points;
+            localStorage.setItem('points', points); // Sauvegarde locale
+            
+            // Vibration légère sur mobile
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('medium');
+            }
+        }
     </script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </body>
 </html>
